@@ -1,32 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { addToDb, getStoredCart } from '../../utilities/fakedb';
+import { Link, useLoaderData } from 'react-router-dom';
+import { addToDb, deleteShoppingCart, getStoredCart } from '../../utilities/fakedb';
 import Cart from '../Cart/Cart';
 import Product from '../Product/Product';
 import './Shop.css'
 
 const Shop = () => {
-    const [products, setProducts] = useState([]);
+    const products = useLoaderData();
     const [cart, setCart] = useState([]);
-
-
-    useEffect(()=>{
-        console.log('befoe fatch')
-        fetch('products.json')
-        .then(res=>res.json())
-        .then(data=> 
-            setProducts(data))
-            
-    },[]);
+    const clearCart = ()=>{
+        setCart([]);
+        deleteShoppingCart();
+    }
 
     useEffect(()=>{
-        // console.log('first line', products)
         const storedCart = getStoredCart();
-       
         const saveCart = [];
-
         for(const id in storedCart){
-            
-        const addProduct = products.find(product=> product.id ===id);
+        const addProduct = products.find(product=> product.id === id);
         if(addProduct){
             const quantity =storedCart[id];
             addProduct.quantity =quantity;
@@ -40,8 +31,9 @@ const Shop = () => {
 
     const handleAddToCart =(selectedProduct)=>{
         console.log(selectedProduct);
-        const exists = cart.find(product=> product.id === selectedProduct);
         let newCart = [];
+        const exists = cart.find(product=> product.id === selectedProduct.id);
+        
         if(!exists){
             selectedProduct.quantity = 1;
             newCart = [...cart, selectedProduct];
@@ -55,20 +47,26 @@ const Shop = () => {
         // const newCart = [...cart, selectedProduct];
         setCart(newCart); 
         addToDb(selectedProduct.id)
+       
     }
+    
     return (
         <div className='shop-container'>
             <div className="products-container">
-                {/* <h3>This is products:{products.length}</h3> */}
                 {
-                    products.map(product=><Product key={product.id}
+                    products.map(product=><Product 
+                    key={product.id}
                     product = {product}
                     handleAddToCart = {handleAddToCart}
                     ></Product>)
                 }
             </div>
             <div className="cart-contanair">
-                <Cart cart={cart}></Cart>
+                <Cart clearCart={clearCart} cart={cart}>
+                <Link to="/orders">
+                        <button>Review Order</button>
+                    </Link>
+                </Cart>
             </div>
         </div>
     );
