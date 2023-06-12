@@ -7,18 +7,22 @@ import Main from './components/Layouts/Main';
 import Orders from './components/Orders/Orders';
 import Shop from './components/Shop/Shop';
 import { productsAndcartLoader } from './Loaders/producteAndcartLoaders';
+import Login from './components/Login/Login';
+import Signup from './components/Signup/Signup';
+import Shipping from './components/Shipping/Shipping';
+import Routes from './components/Routes/Routes';
 
 
 function App() {
   const router = createBrowserRouter([
     {
-      path:'/', 
+      path: '/',
       element: <Main></Main>,
-      children:[
+      children: [
         {
           path: '/',
-          loader:()=> fetch('products.json'),
-          element:<Shop></Shop>
+          loader: () => fetch('products.json'),
+          element: <Shop></Shop>
         },
         {
           path: '/orders',
@@ -27,19 +31,36 @@ function App() {
         },
         {
           path: '/inventory',
-          element: <Inventory></Inventory>
+          element: <Routes>
+            <Inventory></Inventory>
+          </Routes>
         },
         {
-          path:'about',
-          element:<About></About>
+          path: 'shipping',
+          element: <Routes>
+            <Shipping></Shipping>
+          </Routes>
+        },
+        {
+          path: '/about',
+          element: <About></About>
+        },
+        {
+          path: '/login',
+          element: <Login></Login>
+
+        },
+        {
+          path: '/signup',
+          element: <Signup></Signup>
         }
       ]
     },
-    
+
   ]);
   return (
     <div >
-     <RouterProvider router={router}></RouterProvider>
+      <RouterProvider router={router}></RouterProvider>
     </div>
   );
 }

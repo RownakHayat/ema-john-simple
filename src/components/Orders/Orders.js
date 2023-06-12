@@ -32,6 +32,9 @@ const handleRemoveItem = (id) =>{
             </div>
             <div className='cart-contanair'>
                 <Cart clearCart={clearCart} cart={cart}>
+                    <Link to='/shipping'>
+                        <button>Proceed Shipping</button>
+                    </Link>
                 </Cart>
             </div>
         </div>
